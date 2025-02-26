@@ -51,8 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     headerElem.textContent = folderName;
                 }
                 createPlaylist(audioFiles);
-                handleFile(audioFiles[0]); // Auto-play first file
-                currentFile = audioFiles[0];
+                // Removed: handleFile(audioFiles[0]); and currentFile = audioFiles[0];
             }
         }
     });
@@ -259,7 +258,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function drawWaveform() {
         const ctx = waveformCanvas.getContext('2d');
-
         const dpr = window.devicePixelRatio || 1;
         const rect = waveformCanvas.getBoundingClientRect();
         waveformCanvas.width = rect.width * dpr;
@@ -283,23 +281,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const multiplier = rect.height / Math.max(...audioData) / 2;
+        const currentPosition = isPlaying ? (audioContext.currentTime - startTime) / audioBuffer.duration : pausedAt / audioBuffer.duration;
+        const splitIndex = Math.floor(samples * currentPosition);
 
         ctx.fillStyle = '#e0e5ec';
         ctx.fillRect(0, 0, rect.width, rect.height);
 
-        const barWidth = rect.width / samples;
-        const center = rect.height / 2;
-
+        // Draw grid
         ctx.strokeStyle = 'rgba(163, 177, 198, 0.2)';
         ctx.lineWidth = 1;
-
         for (let i = 0; i < rect.height; i += 20) {
             ctx.beginPath();
             ctx.moveTo(0, i);
             ctx.lineTo(rect.width, i);
             ctx.stroke();
         }
-
         for (let i = 0; i < rect.width; i += 40) {
             ctx.beginPath();
             ctx.moveTo(i, 0);
@@ -307,22 +303,37 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.stroke();
         }
 
+        const barWidth = rect.width / samples;
+        const center = rect.height / 2;
+
+        // Draw waveform in two parts: played and unplayed
         for (let i = 0; i < audioData.length; i++) {
             const x = i * barWidth;
             const height = audioData[i] * multiplier;
 
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.fillRect(x, center - height - 1, barWidth - 1, 1);
+            // Set colors based on whether this part has been played
+            if (i <= splitIndex) {
+                // Played portion
+                ctx.fillStyle = 'rgba(66, 153, 225, 0.8)'; // Brighter blue
+            } else {
+                // Unplayed portion
+                ctx.fillStyle = 'rgba(66, 153, 225, 0.3)'; // Dimmer blue
+            }
 
-            ctx.fillStyle = '#4299e1';
+            // Draw upper bar
             ctx.fillRect(x, center - height, barWidth - 1, height);
-
-            ctx.fillStyle = 'rgba(163, 177, 198, 0.5)';
-            ctx.fillRect(x, center, barWidth - 1, 1);
-
-            ctx.fillStyle = '#4299e1';
+            // Draw lower bar
             ctx.fillRect(x, center, barWidth - 1, height);
         }
+
+        // Draw position line
+        const lineX = rect.width * currentPosition;
+        ctx.beginPath();
+        ctx.strokeStyle = '#3182ce';
+        ctx.lineWidth = 2;
+        ctx.moveTo(lineX, 0);
+        ctx.lineTo(lineX, rect.height);
+        ctx.stroke();
     }
 
     function togglePlay() {
@@ -380,6 +391,8 @@ document.addEventListener('DOMContentLoaded', function () {
             progressBar.value = position * 100;
             progressKnob.style.left = `${position * 100}%`;
 
+            drawWaveform(); // Add this line to update waveform
+
             if (playbackTime >= audioBuffer.duration) {
                 stopAudio();
                 pausedAt = 0;
@@ -393,6 +406,7 @@ document.addEventListener('DOMContentLoaded', function () {
             currentTimeElement.textContent = formatTime(pausedAt);
             progressBar.value = position * 100;
             progressKnob.style.left = `${position * 100}%`;
+            drawWaveform(); // Add this line to update waveform
         }
     }
 
