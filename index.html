@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neumorphic Audio Player with Waveform</title>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-solid.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-regular.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-light.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone.css" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/brands.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Audio Player</h1>
+    <div class="container">
+        <div class="playlist-section" id="playlistSection">
+            <div class="playlist-header-container">
+                <div class="playlist-header">Playlist</div>
+                <button class="upload-button" id="uploadButton">
+                    <i class="fa-solid fa-upload"></i>
+                    Upload
+                </button>
+                <input type="file" id="fileInput" accept="audio/*" webkitdirectory directory multiple
+                    style="display: none;">
+            </div>
+            <div id="playlistContainer" class="playlist-container"></div>
+        </div>
+
+        <div class="player-section">
+            <div class="waveform-container" id="waveformContainer">
+                <div class="no-audio" id="noAudio">
+                    <p>No audio file loaded</p>
+                </div>
+                <canvas id="waveform" style="display: none;"></canvas>
+            </div>
+
+            <div id="filenameDisplay" class="filename"></div>
+
+            <div class="playback-controls">
+                <div class="time-display">
+                    <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                </div>
+                <div class="progress-container">
+                    <progress id="progressBar" value="0" max="100"></progress>
+                    <div class="progress-knob" id="progressKnob"></div>
+                </div>
+            </div>
+
+            <div class="player-controls">
+                <button id="playButton" class="play-button" disabled>
+                    <i class="fa-solid fa-play"></i>
+                </button>
+
+                <div class="volume-control">
+                    <i id="volumeIcon" class="fa-solid fa-volume-off"></i>
+                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+                    <span id="volumeValue" class="volume-value">100%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
