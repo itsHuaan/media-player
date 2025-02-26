@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('fileInput');
     const noAudio = document.getElementById('noAudio');
     const waveformCanvas = document.getElementById('waveform');
@@ -13,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const progressBar = document.getElementById('progressBar');
     const progressContainer = document.querySelector('.progress-container');
     const progressKnob = document.getElementById('progressKnob');
+    const uploadButton = document.getElementById('uploadButton');
+    const playlistSection = document.getElementById('playlistSection');
+    let currentFile = null; // Add this line to track current file
     let isDragging = false;
 
     volumeSlider.disabled = true;
@@ -29,31 +31,18 @@ document.addEventListener('DOMContentLoaded', function () {
     let previousVolume = 1;
     let isMuted = false;
 
-    uploadArea.addEventListener('click', () => {
+    uploadButton.addEventListener('click', () => {
         fileInput.click();
-    });
-
-    uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.classList.add('highlight');
-    });
-
-    uploadArea.addEventListener('dragleave', () => {
-        uploadArea.classList.remove('highlight');
-    });
-
-    uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.classList.remove('highlight');
-
-        if (e.dataTransfer.files.length) {
-            handleFile(e.dataTransfer.files[0]);
-        }
     });
 
     fileInput.addEventListener('change', () => {
         if (fileInput.files.length) {
-            handleFile(fileInput.files[0]);
+            const audioFiles = Array.from(fileInput.files).filter(file => file.type.startsWith('audio/'));
+            if (audioFiles.length > 0) {
+                createPlaylist(audioFiles);
+                handleFile(audioFiles[0]); // Auto-play first file
+                currentFile = audioFiles[0];
+            }
         }
     });
 
@@ -172,11 +161,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function handleFile(file) {
         if (!file.type.startsWith('audio/')) {
-            alert('Please select an audio file.');
-            return;
+            return; // Silently ignore non-audio files
         }
 
+        currentFile = file; // Update current file
         filenameDisplay.textContent = file.name;
+        updatePlaylistSelection(); // <-- Add this call
 
         if (isPlaying) {
             stopAudio();
@@ -189,6 +179,38 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         reader.readAsArrayBuffer(file);
+    }
+
+    function updatePlaylistSelection() {
+        const items = document.querySelectorAll('.playlist-item');
+        items.forEach(item => {
+            if (item.textContent === currentFile.name) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        });
+    }
+
+    function createPlaylist(files) {
+        const playlistContainer = document.getElementById('playlistContainer');
+        playlistContainer.innerHTML = '';
+
+        // Sort files by name alphabetically
+        const sortedFiles = [...files].sort((a, b) =>
+            a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+        );
+
+        sortedFiles.forEach((file) => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'playlist-item';
+            if (currentFile && file.name === currentFile.name) {
+                fileItem.classList.add('selected');
+            }
+            fileItem.textContent = file.name;
+            fileItem.addEventListener('click', () => handleFile(file));
+            playlistContainer.appendChild(fileItem);
+        });
     }
 
     function initAudio(arrayBuffer) {
