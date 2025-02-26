@@ -553,49 +553,64 @@ document.addEventListener('DOMContentLoaded', function () {
 
     volumeValue.textContent = `${Math.round(volumeSlider.value * 100)}%`;
 
-    autoScrollMarquee('.playlist-header');
-    autoScrollMarquee('.filename');
+    initMarquees();
 
-    window.addEventListener('resize', () => {
-        autoScrollMarquee('.playlist-header');
-        autoScrollMarquee('.filename');
+    const playlistObserver = new MutationObserver(initMarquees);
+    playlistObserver.observe(document.body, {
+        childList: true,
+        subtree: true
     });
 });
 
-function enableMarqueeOnHover(containerSelector) {
-    const container = document.querySelector(containerSelector);
-    const inner = container.querySelector('.marquee-content');
-    container.addEventListener('mouseenter', () => {
-        if (inner.scrollWidth > container.clientWidth) {
-            const diff = inner.scrollWidth - container.clientWidth;
-            inner.style.setProperty('--scroll-distance', `${diff}px`);
-            // For example: 10 seconds per 200px overflow
-            const duration = Math.max(5, (diff / 200) * 10);
-            inner.style.setProperty('--duration', `${duration}s`);
-            inner.classList.add('scroll');
+function initMarquee(container) {
+    if (!container) return;
+
+    const content = container.querySelector('.marquee-content');
+    if (!content) return;
+
+    // Create wrapper if it doesn't exist
+    let wrapper = container.querySelector('.text-container');
+    if (!wrapper) {
+        wrapper = document.createElement('div');
+        wrapper.className = 'text-container';
+        content.parentNode.insertBefore(wrapper, content);
+        wrapper.appendChild(content);
+    }
+
+    const checkOverflow = () => {
+        // Remove existing animation
+        content.classList.remove('scrolling');
+        content.style.removeProperty('--scroll-distance');
+        content.style.removeProperty('--duration');
+
+        // Check if content overflows
+        if (content.scrollWidth > wrapper.clientWidth) {
+            const scrollDistance = -(content.scrollWidth - wrapper.clientWidth);
+            // Calculate duration based on content length (50px per second)
+            const duration = Math.abs(scrollDistance) / 50;
+
+            content.style.setProperty('--scroll-distance', `${scrollDistance}px`);
+            content.style.setProperty('--duration', `${duration}s`);
+            content.classList.add('scrolling');
         }
-    });
-    container.addEventListener('mouseleave', () => {
-        inner.classList.remove('scroll');
-        inner.style.removeProperty('--scroll-distance');
-        inner.style.removeProperty('--duration');
+    };
+
+    // Initial check
+    checkOverflow();
+
+    // Recheck on window resize
+    window.addEventListener('resize', checkOverflow);
+
+    // Recheck when content changes
+    new MutationObserver(checkOverflow).observe(content, {
+        childList: true,
+        characterData: true,
+        subtree: true
     });
 }
 
-function autoScrollMarquee(containerSelector) {
-    const container = document.querySelector(containerSelector);
-    if (!container) return;
-    const inner = container.querySelector('.marquee-content');
-    if (!inner) return;
-    // If content overflows, set CSS variables and add marquee-auto class
-    if (inner.scrollWidth > container.clientWidth) {
-        const diff = inner.scrollWidth - container.clientWidth;
-        inner.style.setProperty('--scroll-distance', `${diff}px`);
-        // Calculate duration (e.g., 3s per 100px overflow, minimum 5s)
-        const duration = Math.max(5, (diff / 100) * 3);
-        inner.style.setProperty('--duration', `${duration}s`);
-        inner.classList.add('marquee-auto');
-    } else {
-        inner.classList.remove('marquee-auto');
-    }
+// Replace the old autoScrollMarquee function
+function initMarquees() {
+    const containers = document.querySelectorAll('.playlist-header, .filename');
+    containers.forEach(initMarquee);
 }

@@ -379,9 +379,12 @@ progress::-webkit-progress-value {
     overflow-y: auto;
     margin: 0;
     scrollbar-width: thin;
-    scrollbar-color: var(--accent-color) var (--inset-bg);
+    scrollbar-color: var(--accent-color) var(--inset-bg);
+    padding-right: 6px;
+    /* Add padding to prevent content from touching scrollbar */
 }
 
+/* Webkit scrollbar styles */
 .playlist-container::-webkit-scrollbar {
     width: 6px;
 }
@@ -389,20 +392,23 @@ progress::-webkit-progress-value {
 .playlist-container::-webkit-scrollbar-track {
     background: var(--inset-bg);
     border-radius: 3px;
-    box-shadow: inset 1px 1px 2px var(--dark-shadow),
-        inset -1px -1px 2px var(--light-shadow);
+    box-shadow:
+        inset 2px 2px 4px var(--dark-shadow),
+        inset -2px -2px 4px var(--light-shadow);
 }
 
 .playlist-container::-webkit-scrollbar-thumb {
     background: var(--accent-color);
     border-radius: 3px;
-    box-shadow: 2px 2px 4px var(--dark-shadow),
+    box-shadow:
+        2px 2px 4px var(--dark-shadow),
         -2px -2px 4px var(--light-shadow);
+    opacity: 0.8;
 }
 
 .playlist-container::-webkit-scrollbar-thumb:hover {
-    background: var (--accent-color);
-    opacity: 0.8;
+    background: var(--accent-color);
+    opacity: 1;
 }
 
 .playlist-item {
@@ -462,6 +468,34 @@ progress::-webkit-progress-value {
 
     100% {
         transform: translateX(-var(--scroll-distance));
+    }
+}
+
+/* Marquee text container */
+.text-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Marquee content */
+.marquee-content {
+    position: relative;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.marquee-content.scrolling {
+    animation: scroll var(--duration, 15s) linear infinite;
+}
+
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(var(--scroll-distance, -100%));
     }
 }
 
@@ -565,7 +599,38 @@ progress::-webkit-progress-value {
 
     .player-controls {
         flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 10px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .playback-buttons {
         gap: 15px;
+        margin: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        order: 1;
+    }
+
+    .nav-button {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .play-button {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .playback-controls {
+        flex-wrap: wrap;
+        gap: 10px;
         margin-bottom: 10px;
     }
 
