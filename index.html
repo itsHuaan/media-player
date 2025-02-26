@@ -39,12 +39,14 @@
                 <canvas id="waveform" style="display: none;"></canvas>
             </div>
 
-            <div id="filenameDisplay" class="filename"><span class="marquee-content"></span></div>
-
-            <div class="playback-controls">
+            <div class="playback-info">
+                <div id="filenameDisplay" class="filename"><span class="marquee-content"></span></div>
                 <div class="time-display">
                     <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
                 </div>
+            </div>
+
+            <div class="playback-controls">
                 <div class="progress-container">
                     <progress id="progressBar" value="0" max="100"></progress>
                     <div class="progress-knob" id="progressKnob"></div>

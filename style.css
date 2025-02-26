@@ -263,8 +263,9 @@ canvas {
 }
 
 .filename {
-    text-align: center;
-    margin: 10px 0;
+    flex: 1;
+    text-align: left;
+    margin: 0;
     font-weight: 500;
     color: var(--text-color);
     letter-spacing: 0.5px;
@@ -350,9 +351,7 @@ progress::-webkit-progress-value {
 }
 
 .time-display {
-    position: absolute;
-    right: 0;
-    top: -25px;
+    position: static;  /* Remove absolute positioning */
     font-family: monospace;
     font-size: 16px;
     color: var(--text-color);
@@ -362,6 +361,7 @@ progress::-webkit-progress-value {
     box-shadow:
         2px 2px 5px var(--dark-shadow),
         -2px -2px 5px var(--light-shadow);
+    white-space: nowrap;
 }
 
 .playlist-container {
@@ -556,6 +556,16 @@ progress::-webkit-progress-value {
     .waveform-container {
         margin: 10px 0 15px;
     }
+
+    .playback-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .time-display {
+        align-self: flex-end;
+    }
 }
 
 .playlist-header,
@@ -597,4 +607,12 @@ progress::-webkit-progress-value {
     100% {
         transform: translateX(calc(-1 * var(--scroll-distance)));
     }
+}
+
+.playback-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+    gap: 15px;
 }
