@@ -560,6 +560,76 @@ document.addEventListener('DOMContentLoaded', function () {
         childList: true,
         subtree: true
     });
+
+    // Add drag and drop event handlers
+    playlistSection.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        playlistSection.classList.add('highlight');
+    });
+
+    playlistSection.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        playlistSection.classList.remove('highlight');
+    });
+
+    playlistSection.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        playlistSection.classList.remove('highlight');
+
+        const items = e.dataTransfer.items;
+        if (items) {
+            // Use DataTransferItemList interface to access the files
+            const entries = [...items]
+                .filter(item => item.kind === 'file')
+                .map(item => item.webkitGetAsEntry());
+
+            handleFileEntries(entries);
+        }
+    });
+
+    async function handleFileEntries(entries) {
+        const audioFiles = [];
+        let folderName = "Playlist";
+
+        // Function to recursively get files from directories
+        async function traverseEntries(entry) {
+            if (entry.isFile) {
+                return new Promise(resolve => {
+                    entry.file(file => {
+                        if (file.type.startsWith('audio/')) {
+                            audioFiles.push(file);
+                        }
+                        resolve();
+                    });
+                });
+            } else if (entry.isDirectory) {
+                folderName = entry.name; // Use the first directory name
+                const reader = entry.createReader();
+                return new Promise(resolve => {
+                    reader.readEntries(async entries => {
+                        const promises = entries.map(e => traverseEntries(e));
+                        await Promise.all(promises);
+                        resolve();
+                    });
+                });
+            }
+        }
+
+        // Process all entries
+        await Promise.all(entries.map(entry => traverseEntries(entry)));
+
+        if (audioFiles.length > 0) {
+            // Update playlist header
+            const headerElem = document.querySelector('.playlist-header .marquee-content');
+            if (headerElem) {
+                headerElem.textContent = folderName;
+            }
+            createPlaylist(audioFiles);
+        }
+    }
 });
 
 function initMarquee(container) {
