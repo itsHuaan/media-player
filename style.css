@@ -27,7 +27,7 @@ h1 {
     color: var(--text-color);
     font-weight: 600;
     letter-spacing: 1px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .container {
@@ -416,6 +416,9 @@ progress::-webkit-progress-value {
         min-height: 0;
         gap: 20px;
         padding: 20px;
+        margin: 15px;
+        width: calc(100% - 30px);
+        /* Account for margin */
     }
 
     .player-section {
@@ -465,6 +468,9 @@ progress::-webkit-progress-value {
 
     .container {
         padding: 15px;
+        margin: 10px;
+        width: calc(100% - 20px);
+        /* Account for margin */
     }
 
     .player-section {
@@ -478,6 +484,8 @@ progress::-webkit-progress-value {
     .player-controls {
         flex-wrap: wrap;
         gap: 15px;
+        margin-bottom: 10px;
+        /* Add bottom margin */
     }
 
     .volume-control {
@@ -492,6 +500,12 @@ progress::-webkit-progress-value {
     }
 
     .playback-controls {
-        margin: 15px 0;
+        margin: 15px 0 20px;
+        /* Increase bottom margin */
+    }
+
+    .waveform-container {
+        margin: 10px 0 15px;
+        /* Add vertical margins */
     }
 }

@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let isMuted = false;
     let currentFile = null;
 
+    // Initially disable play button
+    playButton.disabled = true;
+
     // Remove old upload area listeners and add new ones
     uploadButton.addEventListener('click', () => {
         fileInput.click();
@@ -73,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function () {
             Promise.all(Array.from(items).map(item => processEntry(item.webkitGetAsEntry())))
                 .then(() => {
                     if (audioFiles.length > 0) {
-                        handleFile(audioFiles[0]);
                         createPlaylist(audioFiles);
                     }
                 });
@@ -82,13 +84,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     fileInput.addEventListener('change', () => {
         if (fileInput.files.length) {
-            // Handle multiple files
             const audioFiles = Array.from(fileInput.files).filter(file => file.type.startsWith('audio/'));
             if (audioFiles.length > 0) {
-                // Handle the first audio file initially
-                handleFile(audioFiles[0]);
-
-                // Create a playlist of audio files
                 createPlaylist(audioFiles);
             }
         }
@@ -280,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Update UI
             durationElement.textContent = formatTime(audioBuffer.duration);
-            playButton.disabled = false;
+            playButton.disabled = false; // Enable play button only when audio is loaded
             noAudio.style.display = 'none';
             waveformCanvas.style.display = 'block';
 
@@ -294,6 +291,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }).catch(error => {
             console.error('Error decoding audio data', error);
             alert('Error loading audio file.');
+            playButton.disabled = true; // Disable play button on error
         });
     }
 
