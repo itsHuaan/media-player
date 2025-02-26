@@ -39,6 +39,17 @@ document.addEventListener('DOMContentLoaded', function () {
         if (fileInput.files.length) {
             const audioFiles = Array.from(fileInput.files).filter(file => file.type.startsWith('audio/'));
             if (audioFiles.length > 0) {
+                // Extract folder name using webkitRelativePath (if available)
+                const firstFile = audioFiles[0];
+                let folderName = "Playlist";
+                if (firstFile.webkitRelativePath) {
+                    folderName = firstFile.webkitRelativePath.split("/")[0] || folderName;
+                }
+                // Update playlist header text
+                const headerElem = document.querySelector('.playlist-header .marquee-content');
+                if (headerElem) {
+                    headerElem.textContent = folderName;
+                }
                 createPlaylist(audioFiles);
                 handleFile(audioFiles[0]); // Auto-play first file
                 currentFile = audioFiles[0];
@@ -497,4 +508,50 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     volumeValue.textContent = `${Math.round(volumeSlider.value * 100)}%`;
+
+    autoScrollMarquee('.playlist-header');
+    autoScrollMarquee('.filename');
+
+    window.addEventListener('resize', () => {
+        autoScrollMarquee('.playlist-header');
+        autoScrollMarquee('.filename');
+    });
 });
+
+function enableMarqueeOnHover(containerSelector) {
+    const container = document.querySelector(containerSelector);
+    const inner = container.querySelector('.marquee-content');
+    container.addEventListener('mouseenter', () => {
+        if (inner.scrollWidth > container.clientWidth) {
+            const diff = inner.scrollWidth - container.clientWidth;
+            inner.style.setProperty('--scroll-distance', `${diff}px`);
+            // For example: 10 seconds per 200px overflow
+            const duration = Math.max(5, (diff / 200) * 10);
+            inner.style.setProperty('--duration', `${duration}s`);
+            inner.classList.add('scroll');
+        }
+    });
+    container.addEventListener('mouseleave', () => {
+        inner.classList.remove('scroll');
+        inner.style.removeProperty('--scroll-distance');
+        inner.style.removeProperty('--duration');
+    });
+}
+
+function autoScrollMarquee(containerSelector) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+    const inner = container.querySelector('.marquee-content');
+    if (!inner) return;
+    // If content overflows, set CSS variables and add marquee-auto class
+    if (inner.scrollWidth > container.clientWidth) {
+        const diff = inner.scrollWidth - container.clientWidth;
+        inner.style.setProperty('--scroll-distance', `${diff}px`);
+        // Calculate duration (e.g., 3s per 100px overflow, minimum 5s)
+        const duration = Math.max(5, (diff / 100) * 3);
+        inner.style.setProperty('--duration', `${duration}s`);
+        inner.classList.add('marquee-auto');
+    } else {
+        inner.classList.remove('marquee-auto');
+    }
+}

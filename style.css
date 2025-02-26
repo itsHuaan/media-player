@@ -440,6 +440,21 @@ progress::-webkit-progress-value {
     }
 }
 
+/* NEW: Auto marquee styles */
+.marquee-auto {
+    animation: marquee var(--duration) linear infinite;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-var(--scroll-distance));
+    }
+}
+
 @media (max-width: 768px) {
     body {
         padding: 5px;
@@ -540,5 +555,46 @@ progress::-webkit-progress-value {
 
     .waveform-container {
         margin: 10px 0 15px;
+    }
+}
+
+.playlist-header,
+.filename {
+    position: relative;
+    overflow: hidden;
+}
+
+.marquee-content {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 10s linear infinite;
+}
+
+.marquee-content.scroll {
+    animation: marquee var(--duration, 10s) linear infinite;
+}
+
+/* Optional: pause marquee on hover */
+.marquee-content:hover {
+    animation-play-state: paused;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(calc(-1 * var(--scroll-distance)));
     }
 }
