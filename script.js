@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Update element references
-    const playlistSection = document.getElementById('playlistSection');
-    const uploadButton = document.getElementById('uploadButton');
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('fileInput');
     const noAudio = document.getElementById('noAudio');
@@ -18,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const progressKnob = document.getElementById('progressKnob');
     let isDragging = false;
 
-    // Disable volume slider initially
     volumeSlider.disabled = true;
 
     let audioContext;
@@ -32,62 +28,32 @@ document.addEventListener('DOMContentLoaded', function () {
     let animationId;
     let previousVolume = 1;
     let isMuted = false;
-    let currentFile = null;
 
-    // Initially disable play button
-    playButton.disabled = true;
-
-    // Remove old upload area listeners and add new ones
-    uploadButton.addEventListener('click', () => {
+    uploadArea.addEventListener('click', () => {
         fileInput.click();
     });
 
-    playlistSection.addEventListener('dragover', (e) => {
+    uploadArea.addEventListener('dragover', (e) => {
         e.preventDefault();
-        playlistSection.classList.add('highlight');
+        uploadArea.classList.add('highlight');
     });
 
-    playlistSection.addEventListener('dragleave', () => {
-        playlistSection.classList.remove('highlight');
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('highlight');
     });
 
-    playlistSection.addEventListener('drop', (e) => {
+    uploadArea.addEventListener('drop', (e) => {
         e.preventDefault();
-        playlistSection.classList.remove('highlight');
+        uploadArea.classList.remove('highlight');
 
-        const items = e.dataTransfer.items;
-        if (items) {
-            const audioFiles = [];
-            const processEntry = async (entry) => {
-                if (entry.isFile) {
-                    const file = await new Promise(resolve => entry.file(resolve));
-                    if (file.type.startsWith('audio/')) {
-                        audioFiles.push(file);
-                    }
-                } else if (entry.isDirectory) {
-                    const reader = entry.createReader();
-                    const entries = await new Promise(resolve => reader.readEntries(resolve));
-                    for (const entry of entries) {
-                        await processEntry(entry);
-                    }
-                }
-            };
-
-            Promise.all(Array.from(items).map(item => processEntry(item.webkitGetAsEntry())))
-                .then(() => {
-                    if (audioFiles.length > 0) {
-                        createPlaylist(audioFiles);
-                    }
-                });
+        if (e.dataTransfer.files.length) {
+            handleFile(e.dataTransfer.files[0]);
         }
     });
 
     fileInput.addEventListener('change', () => {
         if (fileInput.files.length) {
-            const audioFiles = Array.from(fileInput.files).filter(file => file.type.startsWith('audio/'));
-            if (audioFiles.length > 0) {
-                createPlaylist(audioFiles);
-            }
+            handleFile(fileInput.files[0]);
         }
     });
 
@@ -99,11 +65,9 @@ document.addEventListener('DOMContentLoaded', function () {
             gainNode.gain.value = volumeVal;
         }
 
-        // Update volume display and icon
         volumeValue.textContent = `${Math.round(volumeVal * 100)}%`;
         updateVolumeIcon(volumeVal);
 
-        // Update mute state
         isMuted = volumeVal === 0;
         previousVolume = volumeVal > 0 ? volumeVal : previousVolume;
     });
@@ -127,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Add drag functionality to progress knob
     progressKnob.addEventListener('mousedown', (e) => {
         isDragging = true;
         document.addEventListener('mousemove', handleDrag);
@@ -167,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Update progress container click handler
     progressContainer.addEventListener('click', (e) => {
         if (audioBuffer) {
             const rect = progressContainer.getBoundingClientRect();
@@ -180,13 +142,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!gainNode) return;
 
         if (isMuted) {
-            // Unmute
             volumeSlider.value = previousVolume;
             gainNode.gain.value = previousVolume;
             volumeValue.textContent = `${Math.round(previousVolume * 100)}%`;
             updateVolumeIcon(previousVolume);
         } else {
-            // Mute
             previousVolume = gainNode.gain.value > 0 ? gainNode.gain.value : previousVolume;
             volumeSlider.value = 0;
             gainNode.gain.value = 0;
@@ -216,13 +176,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Update selected state in playlist
-        currentFile = file;
-        updatePlaylistSelection();
-
         filenameDisplay.textContent = file.name;
 
-        // Stop any currently playing audio
         if (isPlaying) {
             stopAudio();
         }
@@ -236,25 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
         reader.readAsArrayBuffer(file);
     }
 
-    function updatePlaylistSelection() {
-        // Remove selected class from all items
-        document.querySelectorAll('.playlist-item').forEach(item => {
-            item.classList.remove('selected');
-        });
-
-        // Add selected class to current item
-        if (currentFile) {
-            const items = document.querySelectorAll('.playlist-item');
-            items.forEach(item => {
-                if (item.textContent === currentFile.name) {
-                    item.classList.add('selected');
-                }
-            });
-        }
-    }
-
     function initAudio(arrayBuffer) {
-        // Initialize or reinitialize audio context
         if (!audioContext) {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
         }
@@ -262,55 +199,44 @@ document.addEventListener('DOMContentLoaded', function () {
         audioContext.decodeAudioData(arrayBuffer).then(buffer => {
             audioBuffer = buffer;
 
-            // Enable volume slider when media is loaded
             volumeSlider.disabled = false;
-            // Update volume icon based on current volume value
             updateVolumeIcon(volumeSlider.value);
 
-            // Create gain node for volume control
             gainNode = audioContext.createGain();
             gainNode.gain.value = isMuted ? 0 : volumeSlider.value;
 
-            // Set up analyser for visualization
             analyser = audioContext.createAnalyser();
             analyser.fftSize = 2048;
 
-            // Update UI
             durationElement.textContent = formatTime(audioBuffer.duration);
-            playButton.disabled = false; // Enable play button only when audio is loaded
+            playButton.disabled = false;
             noAudio.style.display = 'none';
             waveformCanvas.style.display = 'block';
 
-            // Draw waveform
             drawWaveform();
 
-            // Reset playback state
             isPlaying = false;
             pausedAt = 0;
             updatePlaybackPosition();
         }).catch(error => {
             console.error('Error decoding audio data', error);
             alert('Error loading audio file.');
-            playButton.disabled = true; // Disable play button on error
         });
     }
 
     function drawWaveform() {
         const ctx = waveformCanvas.getContext('2d');
 
-        // Make canvas resolution match display size
         const dpr = window.devicePixelRatio || 1;
         const rect = waveformCanvas.getBoundingClientRect();
         waveformCanvas.width = rect.width * dpr;
         waveformCanvas.height = rect.height * dpr;
         ctx.scale(dpr, dpr);
 
-        // Clear canvas
         ctx.clearRect(0, 0, rect.width, rect.height);
 
-        // Extract audio data
-        const rawData = audioBuffer.getChannelData(0); // Get data from first channel
-        const samples = 1000; // Number of samples to display
+        const rawData = audioBuffer.getChannelData(0);
+        const samples = 1000;
         const blockSize = Math.floor(rawData.length / samples);
         const audioData = [];
 
@@ -323,22 +249,17 @@ document.addEventListener('DOMContentLoaded', function () {
             audioData.push(sum / blockSize);
         }
 
-        // Find the maximum value for scaling
         const multiplier = rect.height / Math.max(...audioData) / 2;
 
-        // Draw background
         ctx.fillStyle = '#e0e5ec';
         ctx.fillRect(0, 0, rect.width, rect.height);
 
-        // Draw waveform
         const barWidth = rect.width / samples;
         const center = rect.height / 2;
 
-        // Draw subtle grid lines
         ctx.strokeStyle = 'rgba(163, 177, 198, 0.2)';
         ctx.lineWidth = 1;
 
-        // Horizontal grid lines
         for (let i = 0; i < rect.height; i += 20) {
             ctx.beginPath();
             ctx.moveTo(0, i);
@@ -346,7 +267,6 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.stroke();
         }
 
-        // Vertical grid lines
         for (let i = 0; i < rect.width; i += 40) {
             ctx.beginPath();
             ctx.moveTo(i, 0);
@@ -354,24 +274,19 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.stroke();
         }
 
-        // Draw waveform with neumorphic effect
         for (let i = 0; i < audioData.length; i++) {
             const x = i * barWidth;
             const height = audioData[i] * multiplier;
 
-            // Shadow effect above waveform
             ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
             ctx.fillRect(x, center - height - 1, barWidth - 1, 1);
 
-            // Main waveform (upper half)
             ctx.fillStyle = '#4299e1';
             ctx.fillRect(x, center - height, barWidth - 1, height);
 
-            // Shadow effect below waveform
             ctx.fillStyle = 'rgba(163, 177, 198, 0.5)';
             ctx.fillRect(x, center, barWidth - 1, 1);
 
-            // Main waveform (lower half)
             ctx.fillStyle = '#4299e1';
             ctx.fillRect(x, center, barWidth - 1, height);
         }
@@ -388,7 +303,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function playAudio() {
         if (!audioBuffer) return;
 
-        // Create and connect audio nodes
         audioSource = audioContext.createBufferSource();
         audioSource.buffer = audioBuffer;
 
@@ -396,7 +310,6 @@ document.addEventListener('DOMContentLoaded', function () {
         analyser.connect(gainNode);
         gainNode.connect(audioContext.destination);
 
-        // Calculate start time and start playback
         if (pausedAt) {
             startTime = audioContext.currentTime - pausedAt;
         } else {
@@ -407,10 +320,8 @@ document.addEventListener('DOMContentLoaded', function () {
         isPlaying = true;
         playButton.innerHTML = '<i class="fa-solid fa-pause"></i>';
 
-        // Update playback position
         updatePlaybackPosition();
 
-        // Set up animation to update visualizer
         animateWaveform();
     }
 
@@ -422,7 +333,6 @@ document.addEventListener('DOMContentLoaded', function () {
         isPlaying = false;
         playButton.innerHTML = '<i class="fa-solid fa-play"></i>';
 
-        // Cancel the animation
         cancelAnimationFrame(animationId);
     }
 
@@ -437,7 +347,6 @@ document.addEventListener('DOMContentLoaded', function () {
             progressBar.value = position * 100;
             progressKnob.style.left = `${position * 100}%`;
 
-            // Check if playback reached the end
             if (playbackTime >= audioBuffer.duration) {
                 stopAudio();
                 pausedAt = 0;
@@ -470,15 +379,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         ctx.clearRect(0, 0, width, height);
 
-        // Draw background
         ctx.fillStyle = '#e0e5ec';
         ctx.fillRect(0, 0, width, height);
 
-        // Draw subtle grid lines
         ctx.strokeStyle = 'rgba(163, 177, 198, 0.2)';
         ctx.lineWidth = 1;
 
-        // Horizontal grid lines
         for (let i = 0; i < height; i += 20) {
             ctx.beginPath();
             ctx.moveTo(0, i);
@@ -486,7 +392,6 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.stroke();
         }
 
-        // Vertical grid lines
         for (let i = 0; i < width; i += 40) {
             ctx.beginPath();
             ctx.moveTo(i, 0);
@@ -494,10 +399,8 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.stroke();
         }
 
-        // Draw waveform
         ctx.lineWidth = 3;
 
-        // Draw shadow (bottom)
         ctx.strokeStyle = 'rgba(163, 177, 198, 0.5)';
         ctx.beginPath();
 
@@ -520,7 +423,6 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.lineTo(width, center + 2);
         ctx.stroke();
 
-        // Draw highlight (top)
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
         ctx.beginPath();
 
@@ -542,7 +444,6 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.lineTo(width, center - 2);
         ctx.stroke();
 
-        // Draw main waveform
         ctx.strokeStyle = '#4299e1';
         ctx.beginPath();
 
@@ -573,24 +474,5 @@ document.addEventListener('DOMContentLoaded', function () {
         return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
     }
 
-    // Initialize volume display
     volumeValue.textContent = `${Math.round(volumeSlider.value * 100)}%`;
-
-    function createPlaylist(files) {
-        const playlistContainer = document.getElementById('playlistContainer');
-        playlistContainer.innerHTML = '';
-
-        files.forEach((file) => {
-            const fileItem = document.createElement('div');
-            fileItem.className = 'playlist-item';
-            if (currentFile && file.name === currentFile.name) {
-                fileItem.classList.add('selected');
-            }
-            fileItem.textContent = file.name;
-
-            // Remove mouseover/mouseout events and let CSS handle the hover state
-            fileItem.addEventListener('click', () => handleFile(file));
-            playlistContainer.appendChild(fileItem);
-        });
-    }
 });

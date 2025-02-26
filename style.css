@@ -7,19 +7,30 @@
     --inset-bg: #e6ebf2;
 }
 
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     max-width: 800px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 10px;
     background-color: var(--main-bg);
     color: var(--text-color);
     min-height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* overflow: hidden; */
+    box-sizing: border-box;
 }
 
 h1 {
@@ -36,7 +47,6 @@ h1 {
     max-width: 1200px;
     width: 100%;
     height: 500px;
-    /* Fixed height for container */
     background-color: var(--main-bg);
     border-radius: 20px;
     padding: 30px;
@@ -44,14 +54,15 @@ h1 {
         8px 8px 15px var(--dark-shadow),
         -8px -8px 15px var(--light-shadow);
     overflow: hidden;
-    /* Prevent content from spilling out */
+    max-height: calc(100vh - 80px);
+    box-sizing: border-box;
+    margin: 10px;
 }
 
 .player-section {
     flex: 1;
     min-width: 0;
     height: 100%;
-    /* Fill container height */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -66,7 +77,6 @@ h1 {
         inset 2px 2px 5px var(--dark-shadow),
         inset -2px -2px 5px var(--light-shadow);
     height: 100%;
-    /* Fill container height */
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -88,6 +98,16 @@ h1 {
     font-size: 1.2em;
     font-weight: 600;
     color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    position: relative;
+}
+
+.playlist-header:hover {
+    text-overflow: clip;
+    animation: marqueeText 8s linear infinite;
 }
 
 .upload-button {
@@ -131,7 +151,6 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* margin: 25px 0; */
 }
 
 .play-button {
@@ -186,9 +205,7 @@ h1 {
     cursor: pointer;
     user-select: none;
     width: 24px;
-    /* added fixed width */
     text-align: center;
-    /* center the icon */
 }
 
 .volume-value {
@@ -226,11 +243,8 @@ h1 {
 
 .waveform-container {
     flex: 1;
-    /* Allow waveform to fill available space */
     min-height: 150px;
-    /* Minimum height for waveform */
     border-radius: 15px;
-    /* margin: 20px 0; */
     background-color: var(--main-bg);
     box-shadow:
         inset 3px 3px 6px var(--dark-shadow),
@@ -283,7 +297,6 @@ canvas {
     cursor: pointer;
 }
 
-/* Initial position of the knob is defined here (starts at 0% of the container) */
 .progress-knob {
     width: 15px;
     height: 15px;
@@ -386,7 +399,6 @@ progress::-webkit-progress-value {
     position: relative;
     transition: all 0.3s ease;
     transition-property: background-color, box-shadow;
-    /* Only transition these properties */
 }
 
 .playlist-item:not(.selected):hover {
@@ -397,17 +409,16 @@ progress::-webkit-progress-value {
 .playlist-item.selected {
     background-color: var(--inset-bg);
     color: var(--accent-color);
-    /* This will now change immediately */
     font-weight: 500;
     box-shadow: inset 2px 2px 4px var(--dark-shadow),
         inset -2px -2px 4px var(--light-shadow);
 }
 
-/* Add responsive styles */
 @media (max-width: 768px) {
     body {
-        padding: 15px;
-        max-width: 100%;
+        padding: 5px;
+        height: auto;
+        min-height: 100%;
     }
 
     .container {
@@ -416,9 +427,9 @@ progress::-webkit-progress-value {
         min-height: 0;
         gap: 20px;
         padding: 20px;
-        margin: 15px;
+        margin: 5px;
         width: calc(100% - 30px);
-        /* Account for margin */
+        max-height: none;
     }
 
     .player-section {
@@ -470,7 +481,6 @@ progress::-webkit-progress-value {
         padding: 15px;
         margin: 10px;
         width: calc(100% - 20px);
-        /* Account for margin */
     }
 
     .player-section {
@@ -485,7 +495,6 @@ progress::-webkit-progress-value {
         flex-wrap: wrap;
         gap: 15px;
         margin-bottom: 10px;
-        /* Add bottom margin */
     }
 
     .volume-control {
@@ -501,11 +510,9 @@ progress::-webkit-progress-value {
 
     .playback-controls {
         margin: 15px 0 20px;
-        /* Increase bottom margin */
     }
 
     .waveform-container {
         margin: 10px 0 15px;
-        /* Add vertical margins */
     }
 }
