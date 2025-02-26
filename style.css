@@ -347,7 +347,6 @@ progress::-webkit-progress-value {
     flex: 1;
     overflow-y: auto;
     margin: 0;
-    padding: 10px;
     scrollbar-width: thin;
     scrollbar-color: var(--accent-color) var(--inset-bg);
 }
@@ -384,10 +383,24 @@ progress::-webkit-progress-value {
     padding: 10px !important;
     margin: 5px 0 !important;
     border-radius: 8px;
+    position: relative;
+    transition: all 0.3s ease;
+    transition-property: background-color, box-shadow;
+    /* Only transition these properties */
 }
 
-.playlist-item:active {
-    background-color: var(--inset-bg) !important;
+.playlist-item:not(.selected):hover {
+    background-color: var(--inset-bg);
+    opacity: 0.8;
+}
+
+.playlist-item.selected {
+    background-color: var(--inset-bg);
+    color: var(--accent-color);
+    /* This will now change immediately */
+    font-weight: 500;
+    box-shadow: inset 2px 2px 4px var(--dark-shadow),
+        inset -2px -2px 4px var(--light-shadow);
 }
 
 /* Add responsive styles */

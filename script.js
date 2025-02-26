@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let animationId;
     let previousVolume = 1;
     let isMuted = false;
+    let currentFile = null;
 
     // Remove old upload area listeners and add new ones
     uploadButton.addEventListener('click', () => {
@@ -218,6 +219,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        // Update selected state in playlist
+        currentFile = file;
+        updatePlaylistSelection();
+
         filenameDisplay.textContent = file.name;
 
         // Stop any currently playing audio
@@ -232,6 +237,23 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         reader.readAsArrayBuffer(file);
+    }
+
+    function updatePlaylistSelection() {
+        // Remove selected class from all items
+        document.querySelectorAll('.playlist-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+
+        // Add selected class to current item
+        if (currentFile) {
+            const items = document.querySelectorAll('.playlist-item');
+            items.forEach(item => {
+                if (item.textContent === currentFile.name) {
+                    item.classList.add('selected');
+                }
+            });
+        }
     }
 
     function initAudio(arrayBuffer) {
@@ -558,21 +580,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createPlaylist(files) {
         const playlistContainer = document.getElementById('playlistContainer');
-        playlistContainer.innerHTML = ''; // Clear existing playlist
+        playlistContainer.innerHTML = '';
 
-        files.forEach((file, index) => {
+        files.forEach((file) => {
             const fileItem = document.createElement('div');
             fileItem.className = 'playlist-item';
+            if (currentFile && file.name === currentFile.name) {
+                fileItem.classList.add('selected');
+            }
             fileItem.textContent = file.name;
 
-            fileItem.addEventListener('mouseover', () => {
-                fileItem.style.backgroundColor = 'var(--inset-bg)';
-            });
-
-            fileItem.addEventListener('mouseout', () => {
-                fileItem.style.backgroundColor = 'transparent';
-            });
-
+            // Remove mouseover/mouseout events and let CSS handle the hover state
             fileItem.addEventListener('click', () => handleFile(file));
             playlistContainer.appendChild(fileItem);
         });
