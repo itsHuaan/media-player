@@ -14,8 +14,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const progressKnob = document.getElementById('progressKnob');
     const uploadButton = document.getElementById('uploadButton');
     const playlistSection = document.getElementById('playlistSection');
+    const prevButton = document.getElementById('prevButton');
+    const nextButton = document.getElementById('nextButton');
     let currentFile = null; // Add this line to track current file
     let isDragging = false;
+    let currentPlaylistIndex = -1;
+    let playlist = [];
 
     volumeSlider.disabled = true;
 
@@ -189,6 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         reader.readAsArrayBuffer(file);
+        updateNavigationButtons();
     }
 
     function updatePlaylistSelection() {
@@ -203,25 +208,50 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function createPlaylist(files) {
+        playlist = [...files].sort((a, b) =>
+            a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+        );
         const playlistContainer = document.getElementById('playlistContainer');
         playlistContainer.innerHTML = '';
 
-        // Sort files by name alphabetically
-        const sortedFiles = [...files].sort((a, b) =>
-            a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-        );
-
-        sortedFiles.forEach((file) => {
+        playlist.forEach((file, index) => {
             const fileItem = document.createElement('div');
             fileItem.className = 'playlist-item';
             if (currentFile && file.name === currentFile.name) {
                 fileItem.classList.add('selected');
+                currentPlaylistIndex = index;
             }
             fileItem.textContent = file.name;
-            fileItem.addEventListener('click', () => handleFile(file));
+            fileItem.addEventListener('click', () => {
+                currentPlaylistIndex = index;
+                handleFile(file);
+                updateNavigationButtons();
+            });
             playlistContainer.appendChild(fileItem);
         });
+        updateNavigationButtons();
     }
+
+    function updateNavigationButtons() {
+        prevButton.disabled = !playlist.length || currentPlaylistIndex <= 0;
+        nextButton.disabled = !playlist.length || currentPlaylistIndex >= playlist.length - 1;
+    }
+
+    prevButton.addEventListener('click', () => {
+        if (currentPlaylistIndex > 0) {
+            currentPlaylistIndex--;
+            handleFile(playlist[currentPlaylistIndex]);
+            updateNavigationButtons();
+        }
+    });
+
+    nextButton.addEventListener('click', () => {
+        if (currentPlaylistIndex < playlist.length - 1) {
+            currentPlaylistIndex++;
+            handleFile(playlist[currentPlaylistIndex]);
+            updateNavigationButtons();
+        }
+    });
 
     function initAudio(arrayBuffer) {
         if (!audioContext) {

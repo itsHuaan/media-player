@@ -47,7 +47,8 @@ h1 {
     max-width: 1200px;
     width: calc(100% - 60px);
     /* Adjust width to account for shadow */
-    height: 500px;
+    height: 550px;
+    /* Increased from 500px */
     background-color: var(--main-bg);
     border-radius: 20px;
     padding: 30px;
@@ -153,7 +154,8 @@ h1 {
 .player-controls {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    margin-bottom: 10px;
 }
 
 .play-button {
@@ -200,6 +202,7 @@ h1 {
     box-shadow:
         inset 2px 2px 5px var(--dark-shadow),
         inset -2px -2px 5px var(--light-shadow);
+    min-width: 180px;
 }
 
 .volume-control i {
@@ -265,15 +268,14 @@ canvas {
 }
 
 .filename {
-    flex: 1;
-    text-align: left;
-    margin: 0;
+    text-align: center;
+    margin: 10px 0;
     font-weight: 500;
     color: var(--text-color);
     letter-spacing: 0.5px;
     white-space: nowrap;
     overflow: hidden;
-    padding-right: 15px;
+    padding: 0 15px;
 }
 
 .filename:hover {
@@ -291,7 +293,10 @@ canvas {
 
 .playback-controls {
     position: relative;
-    margin: 10px 0 30px 0;
+    margin: 10px 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .progress-container {
@@ -306,6 +311,7 @@ canvas {
     justify-content: center;
     position: relative;
     cursor: pointer;
+    flex: 1;
 }
 
 .progress-knob {
@@ -326,7 +332,7 @@ canvas {
     cursor: grabbing;
     box-shadow:
         1px 1px 2px var(--dark-shadow),
-        -1px -1px 2px var(--light-shadow);
+        -1px -1px 2px var (--light-shadow);
 }
 
 progress {
@@ -365,6 +371,7 @@ progress::-webkit-progress-value {
         2px 2px 5px var(--dark-shadow),
         -2px -2px 5px var(--light-shadow);
     white-space: nowrap;
+    min-width: 85px;
 }
 
 .playlist-container {
@@ -478,7 +485,8 @@ progress::-webkit-progress-value {
 
     .player-section {
         height: auto;
-        min-height: 400px;
+        min-height: 450px;
+        /* Increased from 400px */
         order: 1;
     }
 
@@ -509,6 +517,25 @@ progress::-webkit-progress-value {
         height: 50px;
         font-size: 16px;
     }
+
+    .playback-controls {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .progress-container {
+        order: -1;
+        width: 100%;
+    }
+
+    .time-display {
+        order: 1;
+    }
+
+    .volume-control {
+        order: 2;
+        flex: 1;
+    }
 }
 
 @media (max-width: 480px) {
@@ -528,7 +555,8 @@ progress::-webkit-progress-value {
     }
 
     .player-section {
-        min-height: 350px;
+        min-height: 400px;
+        /* Increased from 350px */
     }
 
     .playlist-section {
@@ -545,6 +573,7 @@ progress::-webkit-progress-value {
         width: 100%;
         margin: 0;
         order: 2;
+        min-width: 0;
     }
 
     .play-button {
@@ -553,7 +582,7 @@ progress::-webkit-progress-value {
     }
 
     .playback-controls {
-        margin: 15px 0 20px;
+        margin: 10px 0;
     }
 
     .waveform-container {
@@ -568,6 +597,17 @@ progress::-webkit-progress-value {
 
     .time-display {
         align-self: flex-end;
+    }
+
+    .nav-button {
+        width: 35px;
+        height: 35px;
+        font-size: 12px;
+    }
+
+    .playback-buttons {
+        gap: 10px;
+        margin: 0 auto;
     }
 }
 
@@ -618,4 +658,45 @@ progress::-webkit-progress-value {
     justify-content: space-between;
     margin: 10px 0;
     gap: 15px;
+}
+
+.playback-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-button {
+    background-color: var(--main-bg);
+    color: var(--text-color);
+    border: none;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow:
+        4px 4px 8px var(--dark-shadow),
+        -4px -4px 8px var(--light-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-button:hover {
+    box-shadow:
+        2px 2px 4px var(--dark-shadow),
+        -2px -2px 4px var(--light-shadow);
+}
+
+.nav-button:active {
+    box-shadow:
+        inset 2px 2px 4px var(--dark-shadow),
+        inset -2px -2px 4px var(--light-shadow);
+}
+
+.nav-button:disabled {
+    color: #a0aec0;
+    cursor: not-allowed;
 }
