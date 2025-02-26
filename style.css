@@ -33,14 +33,6 @@ body {
     box-sizing: border-box;
 }
 
-h1 {
-    text-align: center;
-    color: var(--text-color);
-    font-weight: 600;
-    letter-spacing: 1px;
-    margin-bottom: 20px;
-}
-
 .container {
     display: flex;
     gap: 30px;
@@ -277,6 +269,8 @@ h1 {
     padding: 10px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 canvas {
@@ -295,6 +289,7 @@ canvas {
     white-space: nowrap;
     overflow: hidden;
     padding: 0 15px;
+    text-overflow: ellipsis;
 }
 
 .filename:hover {
@@ -310,6 +305,7 @@ canvas {
     font-style: italic;
     align-self: center;
     justify-self: center;
+    text-align: center;
 }
 
 .playback-controls {
@@ -458,6 +454,9 @@ progress::-webkit-progress-value {
     font-weight: 500;
     box-shadow: inset 2px 2px 4px var(--dark-shadow),
         inset -2px -2px 4px var(--light-shadow);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 @keyframes marquee {
