@@ -289,7 +289,7 @@ canvas {
 
 .playback-controls {
     position: relative;
-    margin: 30px 0;
+    margin: 10px 0 30px 0;
 }
 
 .progress-container {
@@ -351,7 +351,8 @@ progress::-webkit-progress-value {
 }
 
 .time-display {
-    position: static;  /* Remove absolute positioning */
+    position: static;
+    /* Remove absolute positioning */
     font-family: monospace;
     font-size: 16px;
     color: var(--text-color);
@@ -562,7 +563,7 @@ progress::-webkit-progress-value {
         align-items: flex-start;
         gap: 10px;
     }
-    
+
     .time-display {
         align-self: flex-end;
     }
