@@ -195,6 +195,7 @@ h1 {
 }
 
 .volume-control {
+    max-width: fit-content;
     display: flex;
     align-items: center;
     padding: 10px;
@@ -610,15 +611,14 @@ progress::-webkit-progress-value {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 20px;
-        margin: 0;
-        /* Remove order property to maintain default order */
+        gap: 15px;
+        /* Remove any flex-direction or order properties */
     }
 
-    .nav-button {
-        width: 40px;
-        height: 40px;
-        font-size: 14px;
+    .nav-button,
+    .play-button {
+        /* Remove any order properties */
+        order: unset;
     }
 
     .play-button {
@@ -629,6 +629,13 @@ progress::-webkit-progress-value {
         /* Remove order property */
     }
 
+    .player-controls {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
     /* Remove any conflicting order properties */
     .volume-control,
     .playback-buttons,
@@ -636,7 +643,7 @@ progress::-webkit-progress-value {
         order: unset;
     }
 
-    .player-controls {
+    .playback-controls {
         flex-direction: column;
         gap: 15px;
         width: 100%;
@@ -679,8 +686,7 @@ progress::-webkit-progress-value {
     }
 
     .playback-info {
-        flex-direction: column;
-        align-items: flex-start;
+        justify-content: space-between;
         gap: 10px;
     }
 
@@ -734,13 +740,9 @@ progress::-webkit-progress-value {
     }
 
     .playback-info {
-        flex-direction: column;
-        align-items: flex-start;
+        justify-content: space-between;
+        align-items: center;
         gap: 10px;
-    }
-
-    .time-display {
-        align-self: flex-end;
     }
 
     .nav-button {
@@ -808,6 +810,7 @@ progress::-webkit-progress-value {
     display: flex;
     align-items: center;
     gap: 15px;
+    justify-content: center;
 }
 
 .nav-button {
