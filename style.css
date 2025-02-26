@@ -44,6 +44,7 @@ h1 {
 .container {
     display: flex;
     gap: 30px;
+    min-width: fit-content;
     max-width: 1200px;
     width: calc(100% - 60px);
     /* Adjust width to account for shadow */
@@ -64,7 +65,7 @@ h1 {
 
 .player-section {
     flex: 1;
-    min-width: 0;
+    min-width: fit-content;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -304,7 +305,7 @@ canvas {
     border-radius: 10px;
     background: var(--main-bg);
     box-shadow:
-        inset 2px 2px 5px var(--dark-shadow),
+        inset 2px 2px 5px var (--dark-shadow),
         inset -2px -2px 5px var(--light-shadow);
     display: flex;
     align-items: center;
@@ -598,11 +599,89 @@ progress::-webkit-progress-value {
     }
 
     .player-controls {
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 10px;
+        display: flex;
         width: 100%;
+        margin: 0;
+        padding: 10px 0;
+    }
+
+    .playback-buttons {
+        width: 100%;
+        display: flex;
         justify-content: center;
+        align-items: center;
+        gap: 20px;
+        margin: 0;
+        /* Remove order property to maintain default order */
+    }
+
+    .nav-button {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .play-button {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+        margin: 0;
+        /* Remove order property */
+    }
+
+    /* Remove any conflicting order properties */
+    .volume-control,
+    .playback-buttons,
+    .play-button {
+        order: unset;
+    }
+
+    .player-controls {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .playback-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+        order: unset;
+        margin: 0;
+    }
+
+    .nav-button {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .play-button {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+        margin: 0;
+        order: unset;
+    }
+
+    /* Remove duplicated and conflicting styles */
+    .volume-control {
+        width: 100%;
+        margin: 0;
+        min-width: 0;
+    }
+
+    .waveform-container {
+        margin: 10px 0;
+    }
+
+    .playback-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
 
     .playback-buttons {
