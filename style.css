@@ -45,7 +45,8 @@ h1 {
     display: flex;
     gap: 30px;
     max-width: 1200px;
-    width: 100%;
+    width: calc(100% - 60px);
+    /* Adjust width to account for shadow */
     height: 500px;
     background-color: var(--main-bg);
     border-radius: 20px;
@@ -56,7 +57,8 @@ h1 {
     overflow: hidden;
     max-height: calc(100vh - 80px);
     box-sizing: border-box;
-    margin: 10px;
+    margin: 30px;
+    /* Increased margin to prevent shadow clipping */
 }
 
 .player-section {
@@ -370,7 +372,7 @@ progress::-webkit-progress-value {
     overflow-y: auto;
     margin: 0;
     scrollbar-width: thin;
-    scrollbar-color: var(--accent-color) var(--inset-bg);
+    scrollbar-color: var(--accent-color) var (--inset-bg);
 }
 
 .playlist-container::-webkit-scrollbar {
@@ -469,8 +471,8 @@ progress::-webkit-progress-value {
         min-height: 0;
         gap: 20px;
         padding: 20px;
-        margin: 5px;
-        width: calc(100% - 30px);
+        margin: 20px;
+        width: calc(100% - 40px);
         max-height: none;
     }
 
@@ -521,8 +523,8 @@ progress::-webkit-progress-value {
 
     .container {
         padding: 15px;
-        margin: 10px;
-        width: calc(100% - 20px);
+        margin: 15px;
+        width: calc(100% - 30px);
     }
 
     .player-section {
