@@ -181,6 +181,8 @@ document.addEventListener('DOMContentLoaded', function () {
         currentFile = file; // Update current file
         filenameDisplay.textContent = file.name;
         updatePlaylistSelection(); // <-- Add this call
+        // NEW: trigger marquee on media title to auto-scroll when too long
+        initMarquee(filenameDisplay);
 
         if (isPlaying) {
             stopAudio();

@@ -5,6 +5,7 @@
     --light-shadow: #ffffff;
     --dark-shadow: #a3b1c6;
     --inset-bg: #e6ebf2;
+    --scrollbar-width: 8px;
 }
 
 html,
@@ -271,6 +272,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
 canvas {
@@ -278,6 +280,7 @@ canvas {
     min-height: 150px;
     border-radius: 10px;
     width: 100%;
+    max-width: 100%;
 }
 
 .filename {
@@ -348,9 +351,6 @@ canvas {
 
 .progress-knob:active {
     cursor: grabbing;
-    box-shadow:
-        1px 1px 2px var(--dark-shadow),
-        -1px -1px 2px var (--light-shadow);
 }
 
 progress {
@@ -403,30 +403,36 @@ progress::-webkit-progress-value {
 }
 
 /* Webkit scrollbar styles */
-.playlist-container::-webkit-scrollbar {
-    width: 6px;
+::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+    height: var(--scrollbar-width);
 }
 
-.playlist-container::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     background: var(--inset-bg);
-    border-radius: 3px;
+    border-radius: calc(var(--scrollbar-width) / 2);
     box-shadow:
-        inset 2px 2px 4px var(--dark-shadow),
-        inset -2px -2px 4px var(--light-shadow);
+        inset 3px 3px 6px var(--shadow-dark),
+        inset -3px -3px 6px var(--shadow-light);
 }
 
-.playlist-container::-webkit-scrollbar-thumb {
-    background: var(--accent-color);
-    border-radius: 3px;
-    box-shadow:
-        2px 2px 4px var(--dark-shadow),
-        -2px -2px 4px var(--light-shadow);
-    opacity: 0.8;
+::-webkit-scrollbar-thumb {
+    background: var(--inset-bg);
+        border-radius: calc(var(--scrollbar-width) / 2);
+        box-shadow:
+            2px 2px 4px var(--shadow-dark),
+            -2px -2px 4px var(--shadow-light);
 }
 
-.playlist-container::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-color);
-    opacity: 1;
+::-webkit-scrollbar-thumb:hover {
+    box-shadow:
+            3px 3px 6px var(--shadow-dark),
+            -3px -3px 6px var(--shadow-light);
+}
+::-webkit-scrollbar-thumb:active {
+    box-shadow:
+            inset 2px 2px 4px var(--shadow-dark),
+            inset -2px -2px 4px var(--shadow-light);
 }
 
 .playlist-item {
@@ -497,6 +503,7 @@ progress::-webkit-progress-value {
     position: relative;
     width: 100%;
     overflow: hidden;
+    cursor: default;
 }
 
 /* Marquee content */
@@ -504,6 +511,7 @@ progress::-webkit-progress-value {
     position: relative;
     white-space: nowrap;
     display: inline-block;
+    cursor: default;
 }
 
 .marquee-content.scrolling {
@@ -796,11 +804,6 @@ progress::-webkit-progress-value {
     animation: marquee var(--duration, 10s) linear infinite;
 }
 
-/* Optional: pause marquee on hover */
-.marquee-content:hover {
-    animation-play-state: paused;
-}
-
 @keyframes marquee {
     0% {
         transform: translateX(0);
@@ -869,4 +872,33 @@ progress::-webkit-progress-value {
 .nav-button:disabled {
     color: #a0aec0;
     cursor: not-allowed;
+}
+
+/* NEW: Desktop adjustments */
+@media (min-width: 1024px) {
+    .container {
+        /* Increase available width */
+        width: calc(100% - 20px);
+    }
+
+    .playlist-section {
+        width: 45%;
+    }
+
+    .player-section {
+        width: 55%;
+    }
+}
+
+/* Always animate marquee text for media title */
+.filename .marquee-content {
+    /* Remove hover-only rule and always scroll if needed */
+    white-space: nowrap;
+    animation: scroll var(--duration, 10s) linear infinite;
+}
+
+/* NEW: Constrain media title container so long titles don’t expand the UI */
+.filename .text-container {
+    width: 100%;
+    overflow: hidden;
 }
