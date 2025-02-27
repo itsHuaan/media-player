@@ -59,7 +59,7 @@ body {
 .container {
     display: flex;
     gap: 30px;
-    min-width: fit-content;
+    min-width: 800px;
     max-width: 1200px;
     width: calc(70% - 100px);
     /* Adjusted to account for larger margins */
@@ -80,16 +80,21 @@ body {
 
 .player-section {
     flex: 1;
-    width: calc(60% - 10px);
-    min-width: fit-content;
+    width: 60%;
+    min-width: 400px;
+    max-width: calc(100% - 300px);
+    /* leaves space for playlist section */
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .playlist-section {
-    width: calc(40% - 10px);
+    width: 40%;
+    min-width: 250px;
     background: var(--main-bg);
     border-radius: 15px;
     padding: 20px;
@@ -141,6 +146,8 @@ body {
     max-width: 200px;
     position: relative;
     padding-right: 15px;
+    min-width: 0;
+    flex-shrink: 1;
 }
 
 .playlist-header:hover {
@@ -316,6 +323,9 @@ canvas {
     overflow: hidden;
     padding: 0 15px;
     text-overflow: ellipsis;
+    max-width: 100%;
+    min-width: 0;
+    flex-shrink: 1;
 }
 
 .filename:hover {
@@ -405,13 +415,20 @@ progress::-webkit-progress-value {
     font-size: 16px;
     color: var(--text-color);
     background-color: var(--main-bg);
-    padding: 5px 10px;
+    padding: 6px 10px;
+    /* Adjust padding to prevent clipping while maintaining alignment */
     border-radius: 8px;
     box-shadow:
         2px 2px 5px var(--dark-shadow),
         -2px -2px 5px var(--light-shadow);
     white-space: nowrap;
-    min-width: 85px;
+    min-width: 95px;
+    /* Slightly increase to accommodate the text */
+    text-align: center;
+    /* Center the text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .playlist-container {
@@ -477,7 +494,7 @@ progress::-webkit-progress-value {
 
 .playlist-item.selected {
     background-color: var(--inset-bg);
-    color: var(--accent-color);
+    color: var (--accent-color);
     font-weight: 500;
     box-shadow: inset 2px 2px 4px var(--dark-shadow),
         inset -2px -2px 4px var(--light-shadow);
@@ -523,6 +540,8 @@ progress::-webkit-progress-value {
     width: 100%;
     overflow: hidden;
     cursor: default;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .marquee-content {
@@ -530,6 +549,8 @@ progress::-webkit-progress-value {
     white-space: nowrap;
     display: inline-block;
     cursor: default;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .marquee-content.scrolling {
@@ -799,6 +820,24 @@ progress::-webkit-progress-value {
     }
 }
 
+@media (max-width: 900px) {
+    .container {
+        min-width: calc(100% - 40px);
+        width: calc(100% - 40px);
+    }
+
+    .player-section {
+        width: 100%;
+        max-width: 100%;
+        min-height: 450px;
+    }
+
+    .playlist-section {
+        width: 100%;
+        min-width: 100%;
+    }
+}
+
 .playlist-header,
 .filename {
     position: relative;
@@ -841,6 +880,8 @@ progress::-webkit-progress-value {
     justify-content: space-between;
     margin: 10px 0;
     gap: 15px;
+    min-height: 40px;
+    /* Remove the padding */
 }
 
 .playback-buttons {
@@ -906,7 +947,7 @@ progress::-webkit-progress-value {
     border-radius: 12px;
     box-shadow:
         4px 4px 8px var(--dark-shadow),
-        -4px -4px 8px var(--light-shadow);
+        -4px 4px 8px var(--light-shadow);
 }
 
 .theme-select {

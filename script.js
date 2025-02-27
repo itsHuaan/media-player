@@ -353,11 +353,18 @@ document.addEventListener('DOMContentLoaded', function () {
         const currentPosition = isPlaying ? (audioContext.currentTime - startTime) / audioBuffer.duration : pausedAt / audioBuffer.duration;
         const splitIndex = Math.floor(samples * currentPosition);
 
-        ctx.fillStyle = '#e0e5ec';
+        // Get computed styles for colors
+        const computedStyle = getComputedStyle(document.documentElement);
+        const backgroundColor = computedStyle.getPropertyValue('--main-bg').trim();
+        const gridColor = computedStyle.getPropertyValue('--dark-shadow').trim();
+        const waveformColor = computedStyle.getPropertyValue('--accent-color').trim();
+
+        // Background
+        ctx.fillStyle = backgroundColor;
         ctx.fillRect(0, 0, rect.width, rect.height);
 
-        // Draw grid
-        ctx.strokeStyle = 'rgba(163, 177, 198, 0.2)';
+        // Grid
+        ctx.strokeStyle = `${gridColor}40`; // 40 is hex for 25% opacity
         ctx.lineWidth = 1;
         for (let i = 0; i < rect.height; i += 20) {
             ctx.beginPath();
@@ -383,10 +390,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Set colors based on whether this part has been played
             if (i <= splitIndex) {
                 // Played portion
-                ctx.fillStyle = 'rgba(66, 153, 225, 0.8)'; // Brighter blue
+                ctx.fillStyle = `${waveformColor}cc`; // cc is hex for 80% opacity
             } else {
                 // Unplayed portion
-                ctx.fillStyle = 'rgba(66, 153, 225, 0.3)'; // Dimmer blue
+                ctx.fillStyle = `${waveformColor}4d`; // 4d is hex for 30% opacity
             }
 
             // Draw upper bar
@@ -398,7 +405,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Draw position line
         const lineX = rect.width * currentPosition;
         ctx.beginPath();
-        ctx.strokeStyle = '#3182ce';
+        ctx.strokeStyle = waveformColor;
         ctx.lineWidth = 2;
         ctx.moveTo(lineX, 0);
         ctx.lineTo(lineX, rect.height);
@@ -495,10 +502,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         ctx.clearRect(0, 0, width, height);
 
-        ctx.fillStyle = '#e0e5ec';
+        // Get computed styles for colors
+        const computedStyle = getComputedStyle(document.documentElement);
+        const backgroundColor = computedStyle.getPropertyValue('--main-bg').trim();
+        const gridColor = computedStyle.getPropertyValue('--dark-shadow').trim();
+        const waveformColor = computedStyle.getPropertyValue('--accent-color').trim();
+
+        // Background
+        ctx.fillStyle = backgroundColor;
         ctx.fillRect(0, 0, width, height);
 
-        ctx.strokeStyle = 'rgba(163, 177, 198, 0.2)';
+        // Grid
+        ctx.strokeStyle = `${gridColor}40`;
         ctx.lineWidth = 1;
 
         for (let i = 0; i < height; i += 20) {
@@ -517,7 +532,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         ctx.lineWidth = 3;
 
-        ctx.strokeStyle = 'rgba(163, 177, 198, 0.5)';
+        ctx.strokeStyle = `${gridColor}80`;
         ctx.beginPath();
 
         const sliceWidth = width / dataArray.length;
@@ -539,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.lineTo(width, center + 2);
         ctx.stroke();
 
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.strokeStyle = `${waveformColor}40`;
         ctx.beginPath();
 
         x = 0;
@@ -560,7 +575,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.lineTo(width, center - 2);
         ctx.stroke();
 
-        ctx.strokeStyle = '#4299e1';
+        ctx.strokeStyle = waveformColor;
         ctx.beginPath();
 
         x = 0;
