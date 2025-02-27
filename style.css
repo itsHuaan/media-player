@@ -20,9 +20,11 @@ body {
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    max-width: 800px;
+    max-width: 1400px;
+    /* Increased from 800px */
     margin: 0 auto;
-    padding: 10px;
+    padding: 20px 60px;
+    /* Added horizontal padding */
     background-color: var(--main-bg);
     color: var(--text-color);
     min-height: 100vh;
@@ -39,25 +41,26 @@ body {
     gap: 30px;
     min-width: fit-content;
     max-width: 1200px;
-    width: calc(100% - 60px);
-    /* Adjust width to account for shadow */
+    width: calc(70% - 100px);
+    /* Adjusted to account for larger margins */
     height: 550px;
-    /* Increased from 500px */
     background-color: var(--main-bg);
     border-radius: 20px;
-    padding: 30px;
+    padding: 40px;
+    /* Increased from 30px 40px */
     box-shadow:
         8px 8px 15px var(--dark-shadow),
         -8px -8px 15px var(--light-shadow);
     overflow: hidden;
     max-height: calc(100vh - 80px);
     box-sizing: border-box;
-    margin: 30px;
-    /* Increased margin to prevent shadow clipping */
+    margin: 40px;
+    /* Increased from 30px 40px */
 }
 
 .player-section {
     flex: 1;
+    width: calc(60% - 10px);
     min-width: fit-content;
     height: 100%;
     display: flex;
@@ -66,7 +69,7 @@ body {
 }
 
 .playlist-section {
-    width: 300px;
+    width: calc(40% - 10px);
     background: var(--main-bg);
     border-radius: 15px;
     padding: 20px;
@@ -378,7 +381,6 @@ progress::-webkit-progress-value {
 
 .time-display {
     position: static;
-    /* Remove absolute positioning */
     font-family: monospace;
     font-size: 16px;
     color: var(--text-color);
@@ -399,10 +401,8 @@ progress::-webkit-progress-value {
     scrollbar-width: thin;
     scrollbar-color: var(--accent-color) var(--inset-bg);
     padding-right: 6px;
-    /* Add padding to prevent content from touching scrollbar */
 }
 
-/* Webkit scrollbar styles */
 ::-webkit-scrollbar {
     width: var(--scrollbar-width);
     height: var(--scrollbar-width);
@@ -418,21 +418,22 @@ progress::-webkit-progress-value {
 
 ::-webkit-scrollbar-thumb {
     background: var(--inset-bg);
-        border-radius: calc(var(--scrollbar-width) / 2);
-        box-shadow:
-            2px 2px 4px var(--shadow-dark),
-            -2px -2px 4px var(--shadow-light);
+    border-radius: calc(var(--scrollbar-width) / 2);
+    box-shadow:
+        2px 2px 4px var(--shadow-dark),
+        -2px -2px 4px var(--shadow-light);
 }
 
 ::-webkit-scrollbar-thumb:hover {
     box-shadow:
-            3px 3px 6px var(--shadow-dark),
-            -3px -3px 6px var(--shadow-light);
+        3px 3px 6px var(--shadow-dark),
+        -3px -3px 6px var(--shadow-light);
 }
+
 ::-webkit-scrollbar-thumb:active {
     box-shadow:
-            inset 2px 2px 4px var(--shadow-dark),
-            inset -2px -2px 4px var(--shadow-light);
+        inset 2px 2px 4px var(--shadow-dark),
+        inset -2px -2px 4px var(--shadow-light);
 }
 
 .playlist-item {
@@ -483,7 +484,6 @@ progress::-webkit-progress-value {
     }
 }
 
-/* NEW: Auto marquee styles */
 .marquee-auto {
     animation: marquee var(--duration) linear infinite;
 }
@@ -498,7 +498,6 @@ progress::-webkit-progress-value {
     }
 }
 
-/* Marquee text container */
 .text-container {
     position: relative;
     width: 100%;
@@ -506,7 +505,6 @@ progress::-webkit-progress-value {
     cursor: default;
 }
 
-/* Marquee content */
 .marquee-content {
     position: relative;
     white-space: nowrap;
@@ -549,7 +547,6 @@ progress::-webkit-progress-value {
     .player-section {
         height: auto;
         min-height: 450px;
-        /* Increased from 400px */
         order: 1;
     }
 
@@ -619,7 +616,6 @@ progress::-webkit-progress-value {
 
     .player-section {
         min-height: 400px;
-        /* Increased from 350px */
     }
 
     .playlist-section {
@@ -639,12 +635,10 @@ progress::-webkit-progress-value {
         justify-content: center;
         align-items: center;
         gap: 15px;
-        /* Remove any flex-direction or order properties */
     }
 
     .nav-button,
     .play-button {
-        /* Remove any order properties */
         order: unset;
     }
 
@@ -653,7 +647,6 @@ progress::-webkit-progress-value {
         height: 50px;
         font-size: 16px;
         margin: 0;
-        /* Remove order property */
     }
 
     .player-controls {
@@ -663,7 +656,6 @@ progress::-webkit-progress-value {
         margin-bottom: 15px;
     }
 
-    /* Remove any conflicting order properties */
     .volume-control,
     .playback-buttons,
     .play-button {
@@ -701,7 +693,6 @@ progress::-webkit-progress-value {
         order: unset;
     }
 
-    /* Remove duplicated and conflicting styles */
     .volume-control {
         width: 100%;
         margin: 0;
@@ -874,30 +865,11 @@ progress::-webkit-progress-value {
     cursor: not-allowed;
 }
 
-/* NEW: Desktop adjustments */
-@media (min-width: 1024px) {
-    .container {
-        /* Increase available width */
-        width: calc(100% - 20px);
-    }
-
-    .playlist-section {
-        width: 45%;
-    }
-
-    .player-section {
-        width: 55%;
-    }
-}
-
-/* Always animate marquee text for media title */
 .filename .marquee-content {
-    /* Remove hover-only rule and always scroll if needed */
     white-space: nowrap;
     animation: scroll var(--duration, 10s) linear infinite;
 }
 
-/* NEW: Constrain media title container so long titles don’t expand the UI */
 .filename .text-container {
     width: 100%;
     overflow: hidden;
