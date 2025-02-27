@@ -1,4 +1,41 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Theme handling
+    const themeSelect = document.getElementById('themeSelect');
+
+    // Check for saved theme preference or get system preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    // Set initial theme
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme === 'system' ?
+            (systemPrefersDark ? 'dark' : 'light') : savedTheme);
+        themeSelect.value = savedTheme;
+    } else {
+        themeSelect.value = 'system';
+        document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+    }
+
+    // Theme change handler
+    themeSelect.addEventListener('change', function () {
+        const selectedTheme = this.value;
+        localStorage.setItem('theme', selectedTheme);
+
+        if (selectedTheme === 'system') {
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', systemTheme);
+        } else {
+            document.documentElement.setAttribute('data-theme', selectedTheme);
+        }
+    });
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+        if (themeSelect.value === 'system') {
+            document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        }
+    });
+
     const fileInput = document.getElementById('fileInput');
     const noAudio = document.getElementById('noAudio');
     const waveformCanvas = document.getElementById('waveform');

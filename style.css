@@ -8,6 +8,26 @@
     --scrollbar-width: 8px;
 }
 
+/* Light theme (default) */
+:root[data-theme="light"] {
+    --main-bg: #e0e5ec;
+    --text-color: #4a5568;
+    --accent-color: #4299e1;
+    --light-shadow: #ffffff;
+    --dark-shadow: #a3b1c6;
+    --inset-bg: #e6ebf2;
+}
+
+/* Dark theme */
+:root[data-theme="dark"] {
+    --main-bg: #1a1a1a;
+    --text-color: #e0e0e0;
+    --accent-color: #4299e1;
+    --light-shadow: #252525;
+    --dark-shadow: #141414;
+    --inset-bg: #202020;
+}
+
 html,
 body {
     margin: 0;
@@ -873,4 +893,142 @@ progress::-webkit-progress-value {
 .filename .text-container {
     width: 100%;
     overflow: hidden;
+}
+
+/* Theme selector styles */
+.theme-selector {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: var(--main-bg);
+    padding: 5px;
+    border-radius: 12px;
+    box-shadow:
+        4px 4px 8px var(--dark-shadow),
+        -4px -4px 8px var(--light-shadow);
+}
+
+.theme-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: var(--main-bg);
+    color: var(--text-color);
+    border: none;
+    padding: 10px 35px 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow:
+        inset 2px 2px 5px var(--dark-shadow),
+        inset -2px -2px 5px var(--light-shadow);
+    transition: all 0.3s ease;
+    min-width: 140px;
+    position: relative;
+}
+
+.theme-selector::after {
+    content: 'v';
+    font-weight: 900;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color);
+    pointer-events: none;
+    font-size: 14px;
+}
+
+.theme-select:focus {
+    outline: none;
+    box-shadow:
+        inset 3px 3px 6px var(--dark-shadow),
+        inset -3px -3px 6px var(--light-shadow);
+}
+
+.theme-select option {
+    background: var(--main-bg);
+    color: var(--text-color);
+    padding: 10px;
+}
+
+/* Add responsive styles for the theme selector */
+@media (max-width: 768px) {
+    .theme-selector {
+        position: static;
+        margin: 20px auto;
+        width: fit-content;
+    }
+}
+
+.theme-select:hover {
+    box-shadow:
+        3px 3px 6px var(--dark-shadow),
+        -3px -3px 6px var(--light-shadow);
+}
+
+.theme-select:focus {
+    outline: none;
+    box-shadow:
+        2px 2px 4px var(--dark-shadow),
+        -2px -2px 4px var(--light-shadow);
+}
+
+/* Custom dropdown arrow */
+.theme-selector::after {
+    content: '\f107';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color);
+    pointer-events: none;
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.theme-select:focus+.theme-selector::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Dropdown menu styling */
+.theme-select option {
+    background: var(--main-bg);
+    color: var(--text-color);
+    padding: 12px 15px;
+    font-family: 'Font Awesome 6 Free', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+/* Custom select dropdown */
+select.theme-select::-ms-expand {
+    display: none;
+}
+
+/* Styling for Webkit browsers */
+select.theme-select::-webkit-scrollbar {
+    width: 8px;
+}
+
+select.theme-select::-webkit-scrollbar-track {
+    background: var(--inset-bg);
+    border-radius: 4px;
+}
+
+select.theme-select::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 4px;
+}
+
+/* Add responsive styles for the theme selector */
+@media (max-width: 768px) {
+    .theme-selector {
+        position: static;
+        margin: 20px auto;
+        width: fit-content;
+    }
 }
